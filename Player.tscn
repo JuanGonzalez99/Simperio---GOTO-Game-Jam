@@ -1,0 +1,105 @@
+[gd_scene load_steps=22 format=2]
+
+[ext_resource path="res://Sprites/Jugador/sprite_07.png" type="Texture" id=1]
+[ext_resource path="res://Sprites/Jugador/sprite_00.png" type="Texture" id=2]
+[ext_resource path="res://Sprites/Jugador/sprite_01.png" type="Texture" id=3]
+[ext_resource path="res://Sprites/Jugador/sprite_11.png" type="Texture" id=4]
+[ext_resource path="res://Sprites/Jugador/sprite_05.png" type="Texture" id=5]
+[ext_resource path="res://Sprites/Jugador/sprite_02.png" type="Texture" id=6]
+[ext_resource path="res://Sprites/Jugador/sprite_08.png" type="Texture" id=7]
+[ext_resource path="res://Sprites/Jugador/sprite_10.png" type="Texture" id=8]
+[ext_resource path="res://Sprites/Jugador/sprite_06.png" type="Texture" id=9]
+[ext_resource path="res://Sprites/Jugador/sprite_09.png" type="Texture" id=10]
+[ext_resource path="res://Sprites/Jugador/sprite_04.png" type="Texture" id=11]
+[ext_resource path="res://Sprites/Jugador/sprite_03.png" type="Texture" id=12]
+[ext_resource path="res://Player.gd" type="Script" id=13]
+[ext_resource path="res://Sprites/particles.png" type="Texture" id=14]
+[ext_resource path="res://Sprites/Jugador/ESTRELLA_chica.png" type="Texture" id=15]
+
+[sub_resource type="Gradient" id=1]
+colors = PoolColorArray( 1, 1, 1, 0, 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+
+[sub_resource type="ParticlesMaterial" id=3]
+emission_shape = 1
+emission_sphere_radius = 10.0
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 0.5
+color_ramp = SubResource( 2 )
+
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "parado",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "espalda",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 12 ), ExtResource( 11 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "derecha",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 9 ), ExtResource( 1 ), ExtResource( 7 ), ExtResource( 1 ) ],
+"loop": true,
+"name": "frente",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 10 ), ExtResource( 8 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "izquierda",
+"speed": 5.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=5]
+radius = 14.0724
+height = 10.3295
+
+[sub_resource type="SpriteFrames" id=6]
+animations = [ {
+"frames": [ ExtResource( 15 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Player" type="Area2D"]
+position = Vector2( 494.5, 208 )
+script = ExtResource( 13 )
+velocidad = 200
+
+[node name="Sparkle" type="Particles2D" parent="."]
+show_behind_parent = true
+position = Vector2( 0, 30 )
+amount = 20
+lifetime = 0.5
+local_coords = false
+process_material = SubResource( 3 )
+texture = ExtResource( 14 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 1.5, 1.5 )
+frames = SubResource( 4 )
+animation = "parado"
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 1.28064, 0 )
+scale = Vector2( 1.5, 1.5 )
+shape = SubResource( 5 )
+
+[node name="Estrella" type="AnimatedSprite" parent="."]
+position = Vector2( 1, -52 )
+scale = Vector2( 0.754386, 0.719298 )
+frames = SubResource( 6 )
+[connection signal="area_entered" from="." to="." method="_on_Player_area_entered"]
+[connection signal="body_entered" from="." to="." method="_on_Player_body_entered"]

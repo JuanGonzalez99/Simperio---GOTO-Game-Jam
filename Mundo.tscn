@@ -1,0 +1,114 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Mundo.gd" type="Script" id=2]
+[ext_resource path="res://Enemigo.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Interfaz.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Sprites/background3.jpg" type="Texture" id=5]
+[ext_resource path="res://Sounds/dar_estrella.wav" type="AudioStream" id=6]
+[ext_resource path="res://Sounds/song.ogg" type="AudioStream" id=7]
+[ext_resource path="res://Ally.tscn" type="PackedScene" id=8]
+[ext_resource path="res://HSlider.gd" type="Script" id=9]
+[ext_resource path="res://Sounds/muerte.wav" type="AudioStream" id=10]
+[ext_resource path="res://Sounds/agarra_estrella.wav" type="AudioStream" id=11]
+[ext_resource path="res://Sounds/completado.wav" type="AudioStream" id=12]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 22.7855, 100.87 )
+
+[sub_resource type="Curve2D" id=2]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, -0.246185, -0.274246, 0, 0, 0, 0, 1024.8, 0.669632, 0, 0, 0, 0, 1025.75, 601.919, 0, 0, 0, 0, 0.697693, 601.919, 0, 0, 0, 0, -0.246185, -0.274246 )
+}
+
+[node name="Mundo" type="Node"]
+script = ExtResource( 2 )
+Enemigo = ExtResource( 3 )
+Ally = ExtResource( 8 )
+
+[node name="Interfaz" parent="." instance=ExtResource( 4 )]
+
+[node name="Fondo" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 228.0
+texture = ExtResource( 5 )
+stretch_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+visible = false
+position = Vector2( 501.5, 299 )
+
+[node name="Wall" type="Area2D" parent="."]
+position = Vector2( 24.1996, 466.143 )
+gravity = 0.0
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall"]
+shape = SubResource( 1 )
+
+[node name="EnemyTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="ScoreTimer" type="Timer" parent="."]
+
+[node name="InicioTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="AllyTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="PosicionInicial" type="Position2D" parent="."]
+position = Vector2( 500, 300 )
+
+[node name="PositionAlly" type="Position2D" parent="."]
+position = Vector2( 845.686, 443.596 )
+
+[node name="Camino" type="Path2D" parent="."]
+curve = SubResource( 2 )
+
+[node name="EnemyPosition" type="PathFollow2D" parent="Camino"]
+position = Vector2( -0.246185, -0.274246 )
+rotation = 0.000920804
+
+[node name="AudioGameOver" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 10 )
+
+[node name="Musica" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+
+[node name="AudioGetEstrella" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 11 )
+
+[node name="AudioDarEstrella" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+
+[node name="AudioCompletado" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 12 )
+
+[node name="HSlider" type="HSlider" parent="."]
+margin_left = 35.6856
+margin_top = 29.0561
+margin_right = 200.686
+margin_bottom = 45.0561
+max_value = 1.0
+value = 1.0
+script = ExtResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="iniciar_juego" from="Interfaz" to="." method="nuevo_juego"]
+[connection signal="dar_estrella" from="Player" to="." method="_on_Player_dar_estrella"]
+[connection signal="get_estrella" from="Player" to="." method="_on_Player_get_estrella"]
+[connection signal="golpe" from="Player" to="." method="game_over"]
+[connection signal="timeout" from="EnemyTimer" to="." method="_on_EnemyTimer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_ScoreTimer_timeout"]
+[connection signal="timeout" from="InicioTimer" to="." method="_on_InicioTimer_timeout"]
+[connection signal="timeout" from="AllyTimer" to="." method="_on_AllyTimer_timeout"]
+[connection signal="value_changed" from="HSlider" to="." method="_on_HSlider_value_changed"]
